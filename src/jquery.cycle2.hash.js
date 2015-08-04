@@ -14,8 +14,10 @@ $(document).on( 'cycle-pre-initialize', function( e, opts ) {
 
 $(document).on( 'cycle-update-view', function( e, opts, slideOpts ) {
     if ( slideOpts.hash && ( '#' + slideOpts.hash ) != window.location.hash ) {
-        opts._hashFence = true;
-        window.location.hash = slideOpts.hash;
+        // Prevent cycle2 to set a hash tag in the URL on page load
+        // window.location.hash is set on page load #562
+        // opts._hashFence = true;
+        // window.location.hash = slideOpts.hash;
     }
 });
 
