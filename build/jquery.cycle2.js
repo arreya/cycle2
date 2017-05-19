@@ -1,7 +1,7 @@
 /*!
-* jQuery Cycle2; version: 2.1.6 build: 20150610
+* jQuery Cycle2; version: 2.1.6 build: 20170519
 * http://jquery.malsup.com/cycle2/
-* Copyright (c) 2015 M. Alsup; Dual licensed: MIT/GPL
+* Copyright (c) 2017 M. Alsup; Dual licensed: MIT/GPL
 */
 
 /* Cycle2 core engine */
@@ -307,7 +307,11 @@ $.fn.cycle.API = {
     prepareTx: function( manual, fwd ) {
         var opts = this.opts();
         var after, curr, next, slideOpts, tx;
-
+        // credit to @peterharaszin for suggesting a much better way... 
+        // https://github.com/malsup/cycle2/issues/240#issuecomment-70231459
+        if( !opts || !("slideCount" in opts) ) {
+            return;
+        }
         if ( opts.slideCount < 2 ) {
             opts.timeoutId = 0;
             return;
@@ -744,7 +748,7 @@ function initAutoHeight( e, opts ) {
     var clone, height, sentinelIndex;
     var autoHeight = opts.autoHeight;
 
-    if ( autoHeight == 'container' && opts._autoHeightRatio ) {
+    if ( autoHeight == 'container' ) {
         height = $( opts.slides[ opts.currSlide ] ).outerHeight();
         opts.container.height( height );
     }
@@ -1069,8 +1073,10 @@ $(document).on( 'cycle-pre-initialize', function( e, opts ) {
 
 $(document).on( 'cycle-update-view', function( e, opts, slideOpts ) {
     if ( slideOpts.hash && ( '#' + slideOpts.hash ) != window.location.hash ) {
-        opts._hashFence = true;
-        window.location.hash = slideOpts.hash;
+        // Prevent cycle2 to set a hash tag in the URL on page load
+        // window.location.hash is set on page load #562
+        // opts._hashFence = true;
+        // window.location.hash = slideOpts.hash;
     }
 });
 
