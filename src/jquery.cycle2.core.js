@@ -301,7 +301,11 @@ $.fn.cycle.API = {
     prepareTx: function( manual, fwd ) {
         var opts = this.opts();
         var after, curr, next, slideOpts, tx;
-
+        // credit to @peterharaszin for suggesting a much better way... 
+        // https://github.com/malsup/cycle2/issues/240#issuecomment-70231459
+        if( !opts || !("slideCount" in opts) ) {
+            return;
+        }
         if ( opts.slideCount < 2 ) {
             opts.timeoutId = 0;
             return;
