@@ -1,5 +1,5 @@
 /*!
-* jQuery Cycle2; version: 2.1.6 build: 20170519
+* jQuery Cycle2; version: 2.1.7 build: 20170629
 * http://jquery.malsup.com/cycle2/
 * Copyright (c) 2017 M. Alsup; Dual licensed: MIT/GPL
 */
@@ -220,9 +220,14 @@ $.fn.cycle.API = {
             opts.slideCount++;
             slideOpts = opts.API.buildSlideOpts( slide );
 
-            if ( prepend )
+            if ( prepend ) {
                 opts.slides = $( slide ).add( opts.slides );
-            else
+                opts.currSlide++;
+                opts.nextSlide++; 
+
+                if ( opts.nextSlide >= opts.slideCount )
+                    opts.nextSlide -= opts.slideCount;
+            } else
                 opts.slides = opts.slides.add( slide );
 
             opts.API.initSlide( slideOpts, slide, --opts._maxZ );
@@ -1030,12 +1035,11 @@ $.extend( c2.API, {
             opts.slides = $( slides );
             opts.slideCount--;
             $( slideToRemove ).remove();
-            if (index == opts.currSlide)
+            if ( index == opts.currSlide ) {
+				opts.nextSlide = opts.currSlide--;
                 opts.API.advanceSlide( 1 );
-            else if ( index < opts.currSlide )
-                opts.currSlide--;
-            else
-                opts.currSlide++;
+            } else if ( index < opts.currSlide )
+                opts.nextSlide = opts.currSlide--;
 
             opts.API.trigger('cycle-slide-removed', [ opts, index, slideToRemove ]).log('cycle-slide-removed');
             opts.API.updateView();
